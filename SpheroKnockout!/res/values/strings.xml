@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sphero Knockout!</string>
+    <string name="action_settings">Settings</string>
+    <string name="play_button">Get Rolling!</string>
+    <string name="title_activity_attack_sphero">AttackSphero</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
