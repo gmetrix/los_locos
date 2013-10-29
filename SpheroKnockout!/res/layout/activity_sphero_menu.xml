@@ -8,19 +8,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SpheroMenu" >
 
-    <View
-        android:id="@+id/view1"
-        android:layout_width="wrap_content"
+    <orbotix.view.connection.SpheroConnectionView
+        android:id="@+id/sphero_connection_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFF" />
+    
+    <vatos.locos.spheroknockout.DrawView
+        android:id="@+id/drawView1"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="66dp" />
-
-    <Button
-        android:id="@+id/button_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="172dp"
-        android:text="@string/play_button" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+    
+     
 
 </RelativeLayout>
