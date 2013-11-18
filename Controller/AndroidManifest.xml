@@ -3,6 +3,9 @@
     package="sphero.knockout.controller"
     android:versionCode="1"
     android:versionName="1.0" >
+    
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -15,7 +18,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="sphero.knockout.controller.Controller"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+             android:configChanges="orientation|keyboard|keyboardHidden"
+             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
