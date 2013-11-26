@@ -282,7 +282,7 @@ public class JoystickView extends View implements Controller {
 				default:
 					break;
 		}
-		
+	
 	}
 	public void setEnabled(boolean v){
 		super.setEnabled(v);
@@ -299,7 +299,5 @@ public class JoystickView extends View implements Controller {
 	@Override
 	public void setRobot(Robot robot) {
 		this.robot = robot;
-		
 	}
-
 }

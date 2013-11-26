@@ -1,27 +1,21 @@
 package sphero.knockout.controller;
 
-import android.os.Bundle;
-import android.content.Intent;
-import android.provider.Settings;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
-//import orbotix.robot.app.ColorPickerActivity;
-import orbotix.robot.base.RGBLEDOutputCommand;
 import orbotix.robot.base.Robot;
 import orbotix.robot.base.RobotProvider;
-import orbotix.robot.base.RobotProvider.OnRobotDisconnectedListener;
-import orbotix.robot.base.SleepCommand;
-//import orbotix.robot.widgets.CalibrationImageButtonView;
-//import orbotix.robot.widgets.NoSpheroConnectedView;
-//import orbotix.robot.widgets.NoSpheroConnectedView.OnConnectButtonClickListener;
-//import orbotix.robot.widgets.SlideToSleepView;
-import robot.widget.joystick.JoystickView;
-import sphero.knockout.controller.R;
 import orbotix.view.calibration.CalibrationView;
 import orbotix.view.calibration.widgets.ControllerActivity;
 import orbotix.view.connection.SpheroConnectionView;
 import orbotix.view.connection.SpheroConnectionView.OnRobotConnectionEventListener;
+import robot.widget.joystick.JoystickView;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+//import orbotix.robot.app.ColorPickerActivity;
+//import orbotix.robot.widgets.CalibrationImageButtonView;
+//import orbotix.robot.widgets.NoSpheroConnectedView;
+//import orbotix.robot.widgets.NoSpheroConnectedView.OnConnectButtonClickListener;
+//import orbotix.robot.widgets.SlideToSleepView;
 
 //import android.app.Activity;
 //import android.view.Menu;
