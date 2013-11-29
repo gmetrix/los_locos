@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/sphero.knockout.controller"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/arena">
+
+    <TextView
+        android:id="@+id/focal_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text=""
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/healt_pts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="66dp"
+        android:text="@string/health_points"
+        android:textSize="30sp" />
+    
+
+    <ProgressBar
+        android:id="@+id/enemybar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_alignBottom="@+id/health_pts"
+        android:layout_alignTop="@+id/enemy_pts"
+        android:layout_toLeftOf="@+id/enemy_pts"
+        android:layout_toRightOf="@+id/health_pts" />
+
+    <TextView
+        android:id="@+id/enemy_pts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/health_pts"
+        android:layout_alignBottom="@+id/health_pts"
+        android:layout_alignParentRight="true"
+        android:text="@string/enemy_pts"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/health_pts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="@string/health_points"
+        android:textSize="30sp" />
+
+    <robot.widget.joystick.JoystickView
+        android:id="@+id/joystick"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        app:edge_overlap="20dp"
+        app:puck_radius="30dp" />
+
+    <ProgressBar
+        android:id="@+id/myProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/your_pts"
+        android:layout_toLeftOf="@+id/health_pts"
+        android:layout_toRightOf="@+id/healt_pts" />
+
+    <TextView
+        android:id="@+id/your_pts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/health_pts"
+        android:text="@string/your_pts"
+        android:textSize="30sp" />
+
+        <orbotix.view.connection.SpheroConnectionView
+        android:id= "@+id/sphero_connection_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFF" />
+    
+</RelativeLayout>
