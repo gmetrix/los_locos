@@ -133,23 +133,24 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class id {
         public static final int above=0x7f040004;
-        public static final int action_settings=0x7f040011;
+        public static final int action_settings=0x7f040012;
         public static final int below=0x7f040007;
+        public static final int calibrateSeek=0x7f04000f;
         public static final int enemy_pts=0x7f04000c;
         public static final int enemybar=0x7f04000a;
         public static final int focal_point=0x7f040008;
         public static final int healt_pts=0x7f040009;
         public static final int health_pts=0x7f04000b;
         public static final int horizontal=0x7f040000;
-        public static final int joystick=0x7f04000d;
+        public static final int joystick=0x7f040010;
         public static final int left=0x7f040005;
-        public static final int myProgressBar=0x7f04000e;
+        public static final int myProgressBar=0x7f04000d;
         public static final int position1=0x7f040002;
         public static final int position2=0x7f040003;
         public static final int right=0x7f040006;
-        public static final int sphero_connection_view=0x7f040010;
+        public static final int sphero_connection_view=0x7f040011;
         public static final int vertical=0x7f040001;
-        public static final int your_pts=0x7f04000f;
+        public static final int your_pts=0x7f04000e;
     }
     public static final class layout {
         public static final int activity_controller=0x7f030000;

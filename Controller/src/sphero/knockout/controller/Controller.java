@@ -14,19 +14,26 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import orbotix.robot.base.BackLEDOutputCommand;
+import orbotix.robot.base.CalibrateCommand;
 import orbotix.robot.base.CollisionDetectedAsyncData;
 import orbotix.robot.base.ConfigureCollisionDetectionCommand;
 import orbotix.robot.base.DeviceAsyncData;
 import orbotix.robot.base.DeviceMessenger;
+import orbotix.robot.base.FrontLEDOutputCommand;
 import orbotix.robot.base.RGBLEDOutputCommand;
 import orbotix.robot.base.Robot;
+import orbotix.robot.base.RobotControl;
 import orbotix.robot.base.RobotProvider;
 import orbotix.robot.base.CollisionDetectedAsyncData.CollisionPower;
 import orbotix.robot.base.DeviceMessenger.AsyncDataListener;
 import orbotix.robot.base.RobotProvider.OnRobotDisconnectedListener;
-import orbotix.robot.base.SleepCommand;
+import orbotix.robot.base.RollCommand;
+import orbotix.robot.base.SetHeadingCommand;
 import orbotix.robot.sensor.Acceleration;
 //import orbotix.robot.widgets.CalibrationImageButtonView;
 //import orbotix.robot.widgets.NoSpheroConnectedView;
@@ -75,12 +82,13 @@ public class Controller extends ControllerActivity {
 	Firebase server;
 	Firebase enemy;
 	
-	private static int MAX_PTS = 100;
+	public static float startingPoint;
+	
+	//seek bar for calibration
+	private SeekBar calibrate;
 	private static final String FIREBASE_URL = "https://spheroknockout-123.firebaseio.com";
 	
 	private Handler mHandler = new Handler();
-
-	private Handler progressHandle = new Handler();
 	private static int TURN = 0;
 	
 	private ValueEventListener connectedListener;
@@ -104,6 +112,37 @@ public class Controller extends ControllerActivity {
 	
 		enemy = new Firebase(FIREBASE_URL).child("Game123/Players/Player1");
 		
+		//set up for calibration seekbar
+		calibrate =(SeekBar)findViewById(R.id.calibrateSeek);
+		calibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				float prog = (float)progress;
+				FrontLEDOutputCommand.sendCommand(mRobot,(float)1.0);
+				Log.d("progress of bar", ""+progress);
+				float diff = RollCommand.getCurrentHeading()+ (progress-startingPoint);
+		        RollCommand.sendCommand(mRobot, prog, 0);
+				
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				startingPoint = (float)seekBar.getProgress();
+			}
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				FrontLEDOutputCommand.sendCommand(mRobot,0);
+				float prog = (float) seekBar.getProgress();
+				SetHeadingCommand.sendCommand(mRobot, 0);
+			}
+			
+		});
+
 		enemy.addValueEventListener(new ValueEventListener(){
 
 			@Override
@@ -117,22 +156,32 @@ public class Controller extends ControllerActivity {
 				enemyHP.setText(arg0.getValue(String.class));
 				int snap = Integer.parseInt(arg0.getValue(String.class));
 				//int pts = Math.abs(Integer.parseInt(arg0.getValue(String.class))-mProgressBar.getProgress());
-				int pts1 = -10;
-				Log.d("testgetProgress","" +mProgressBar.getProgress());
-				if(mProgressBar.getProgress()> snap){
-					mProgressBar.incrementProgressBy(pts1);
+				Log.d("testgetProgress","" + mProgressBar.getProgress());
+				if(snap >= 0 && mProgressBar.getProgress() > 0){
+					int diff;
+					if(snap > mProgressBar.getProgress()){
+						diff = snap - mProgressBar.getProgress();
+						mProgressBar.incrementProgressBy(diff);
+					}
+					else{
+						diff = -(mProgressBar.getProgress()- snap);
+						mProgressBar.incrementProgressBy(diff);
+					}
 				}
-				else if(mProgressBar.getProgress() == 0){
+				else if(snap < 0 && mProgressBar.getProgress() == 0){
 					mProgressBar.incrementProgressBy(0);
 				}
 				else{
+					Log.d("else", ""+mProgressBar.getProgress());
 					mProgressBar.incrementProgressBy(snap);
 				}
+				
 		        // Title progress is in range 0..10000
 		        setProgress(100 * mProgressBar.getProgress());
 			}
 			
 		});
+		
 	
         // Set up the Sphero Connection View
         mSpheroConnectionView = (SpheroConnectionView)findViewById(R.id.sphero_connection_view);
@@ -148,12 +197,12 @@ public class Controller extends ControllerActivity {
                 //Set connected Robot to the Controllers
                 setRobot(mRobot);
                 
+                //setCalibrate(mRobot);
+                
+                
                 // Make sure you let the calibration view knows the robot it should control
                 //mCalibrationView.setRobot(mRobot);
                 
-                // Make connect sphero pop-up invisible if it was previously up
-//                mNoSpheroConnectedView.setVisibility(View.GONE);
-//                mNoSpheroConnectedView.switchToConnectButton();
                 // Hide Connection View since we only want to connect to one robot
                 mSpheroConnectionView.setVisibility(View.GONE);
                 
@@ -174,9 +223,7 @@ public class Controller extends ControllerActivity {
 			
 			@Override
 			public void onNonePaired() {
-				//mSpheroConnectionView.setVisibility(View.GONE);
-//				mNoSpheroConnectedView.switchToSettingsButton();
-//				mNoSpheroConnectedView.setVisibility(View.VISIBLE);
+
 			}
 			
 			@Override
@@ -240,7 +287,7 @@ public class Controller extends ControllerActivity {
 		String x = (String) enemyHP.getText();
 		int hp = Integer.parseInt(x) -10;
 		TURN = 1;
-		//enemy.setValue(hp);
+
 		Log.d("sendMessage",x);
 //		mProgressBar.incrementProgressBy(-10);
 //        // Title progress is in range 0..10000
