@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ff888888" 
+    tools:context=".SpheroMenu" >
+	
+    <RelativeLayout
+            android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"
+            android:background="#A0000000"  >
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="119dp"
+        android:text="Start Game" />
+    
+    </RelativeLayout>
+
+</FrameLayout>

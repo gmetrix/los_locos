@@ -1,0 +1,57 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!-- controls -->
+    <style name="ControlButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">20dp</item>
+    </style>
+    
+    <!-- Generic Dialog Styles -->
+	<style name="Dialog">
+	</style>
+	<style name="Dialog.TitleSpace">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginBottom">3dip</item>
+	</style>
+	<style name="Dialog.Title">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginLeft">10dip</item>
+	</style>
+	<style name="Dialog.Title.Icon">
+        <item name="android:layout_marginTop">3dip</item>
+		<item name="android:src">@drawable/dialog_icon</item>
+	</style>
+	<style name="Dialog.Title.Text">
+		<item name="android:textColor">#fff</item>
+		<item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+	</style>
+	<style name="Dialog.Background">
+		<item name="android:background">@drawable/dialog_bg</item>
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">match_parent</item>
+	</style>
+	
+
+</resources>
