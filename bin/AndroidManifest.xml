@@ -35,6 +35,7 @@
             android:configChanges="orientation|keyboard|keyboardHidden"
             android:theme="@android:style/Theme.Translucent"
             />
+        <service android:name = "sphero.knockout.service.BackgroundMusic" android:enabled="true"></service>
 
     </application>
 </manifest> 

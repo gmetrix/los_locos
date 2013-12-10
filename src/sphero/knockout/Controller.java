@@ -1,5 +1,7 @@
 package sphero.knockout;
 
+import java.io.IOException;
+
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -11,11 +13,15 @@ import com.firebase.client.ValueEventListener;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.IBinder;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -48,6 +54,7 @@ import orbotix.robot.sensor.Acceleration;
 //import orbotix.robot.widgets.NoSpheroConnectedView.OnConnectButtonClickListener;
 //import orbotix.robot.widgets.SlideToSleepView;
 import robot.widget.joystick.JoystickView;
+import sphero.knockout.service.BackgroundMusic;
 import orbotix.view.calibration.CalibrationView;
 import orbotix.view.calibration.widgets.ControllerActivity;
 import orbotix.view.connection.SpheroConnectionView;
@@ -61,6 +68,8 @@ public static final String USER_NAME = "USER_NAME";
 	private static int myPlayerNumber;
 	private static int myEnemyNumber;
 	private static int myHealth;
+	
+	private boolean userdisconnected = false;
 	
 	private Handler gamedataHandler = new Handler();
 	
@@ -150,10 +159,48 @@ public static final String USER_NAME = "USER_NAME";
     JoystickView stickctrl;
 	
 	/*Called when activity is created*/
-	@Override
+	
+	
+	
+	
+	private boolean mIsBound = false;
+    private BackgroundMusic mServ = null;
+    private ServiceConnection Scon =new ServiceConnection(){
+
+    	public void onServiceConnected(ComponentName name, IBinder binder) 
+    	{
+    	mServ = ((BackgroundMusic.ServiceBinder)binder).getService();
+    	
+    	}
+
+    	public void onServiceDisconnected(ComponentName name) {
+    		mServ = null;
+    	}
+    	};
+
+    	void doBindService(){
+     		bindService(new Intent(this,BackgroundMusic.class),
+    				Scon,Context.BIND_AUTO_CREATE);
+    		mIsBound = true;
+    	}
+
+    	void doUnbindService()
+    	{
+    		if(mIsBound)
+    		{
+    			unbindService(Scon);
+          		mIsBound = false;
+    		}
+    	}
+    	Intent music;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_controller);
+		
+		
+		
+		
 		
 		//get userName from previous setDialog
         Intent i = getIntent();
@@ -184,6 +231,7 @@ public static final String USER_NAME = "USER_NAME";
 		
 		//set up for calibration seekbar
 		calibrate =(SeekBar)findViewById(R.id.calibrateSeek);
+		//calibrate.setEnabled(false);
 		calibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 			
 			@SuppressWarnings("deprecation")
@@ -225,6 +273,7 @@ public static final String USER_NAME = "USER_NAME";
 			public void onRobotConnected(Robot robot) {
 				// Set Robot
 				mRobot = robot;
+				
                 //Set connected Robot to the Controllers
                 setRobot(mRobot);
                 
@@ -265,6 +314,10 @@ public static final String USER_NAME = "USER_NAME";
 	            //Toast.makeText(Controller.this, "Bluetooth Not Enabled", Toast.LENGTH_LONG).show();
 			}
 		});
+        
+        music = new Intent();
+		music.setClass(this,BackgroundMusic.class);
+		startService(music);
 	}
 
 	
@@ -272,6 +325,7 @@ public static final String USER_NAME = "USER_NAME";
 	protected void onResume() {
 		super.onResume();
 		mSpheroConnectionView.showSpheros();
+		
 	}
 
 	 @Override
@@ -290,18 +344,50 @@ public static final String USER_NAME = "USER_NAME";
 	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
 	    }
 		@Override 
-		public void onStop(){
-			super.onStop();
+//		public void onStop(){
+//			super.onStop();
+//			if(playerHPRef != null)
+//	    		playerHPRef.removeValue();
+//	    	if(playerListRef != null)
+//	    		playerListRef.removeValue();
+//	    	if(playerTurnRef != null)
+//	    		playerTurnRef.removeValue();
+//		    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
+//	    	// Disconnect Robot properly
+//	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
+//	    	
+//	    	mServ.pauseMusic();
+//			//server.getRoot().child("info/connected").removeEventListener(connectedListener);
+//	    	
+//		}
+		public void onRestart(){
+			mServ.resumeMusic();
+		}
+		public void onDestroy(){
 			if(playerHPRef != null)
-	    		playerHPRef.removeValue();
-	    	if(playerListRef != null)
-	    		playerListRef.removeValue();
-	    	if(playerTurnRef != null)
-	    		playerTurnRef.removeValue();
-		    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
-	    	// Disconnect Robot properly
-	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
-			//server.getRoot().child("info/connected").removeEventListener(connectedListener);
+    		playerHPRef.removeValue();
+    	if(playerListRef != null)
+    		playerListRef.removeValue();
+    	if(playerTurnRef != null)
+    		playerTurnRef.removeValue();
+	    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
+    	// Disconnect Robot properly
+    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
+			mServ.stopMusic();
+			doUnbindService();
+			stopService(music);
+		}
+		public void onBackPressed() {
+		    new AlertDialog.Builder(this)
+		        .setTitle("Really Exit?")
+		        .setMessage("Are you sure you want to exit?")
+		        .setNegativeButton(android.R.string.no, null)
+		        .setPositiveButton(android.R.string.yes, new OnClickListener() {
+
+		            public void onClick(DialogInterface arg0, int arg1) {
+		                SheroMenu.c.super.onBackPressed();
+		            }
+		        }).create().show();
 		}
 		
 	@Override
@@ -323,8 +409,9 @@ public static final String USER_NAME = "USER_NAME";
 				CollisionPower power = collisionData.getImpactPower();
 				float speed = collisionData.getImpactSpeed();
 				System.out.println(speed);
-				if((power.x >70 || power.y > 70) && speed > .10){
+				if((power.x >40 || power.y > 40) &&!attackTurn){
 					sendMessage();
+					blink();
 				}
 
 			}
@@ -411,6 +498,7 @@ public static final String USER_NAME = "USER_NAME";
 
 	    	    @Override
 	    	    public void onChildRemoved(DataSnapshot snapshot) {
+	    	    	userdisconnected = true;
 
 	    	    }
 
@@ -543,6 +631,7 @@ public static final String USER_NAME = "USER_NAME";
 		 playerTurnRef.addValueEventListener(new ValueEventListener() {
 	    	 @Override
 	         public void onDataChange(DataSnapshot snapshot) {
+	    		 snapshot.getRef();
 	              Object value = snapshot.getValue();
 	              if(value == null)
 	              {
@@ -550,11 +639,17 @@ public static final String USER_NAME = "USER_NAME";
 	              }
 	              else
 	              {
+	            	  if(userdisconnected){
+	            		  finish();
+	            	  }
 	            	  attackTurn = (Boolean)value;
 	                  System.out.println(attackTurn);
-	               	  if(attackTurn == true)
+	               	  if(attackTurn == true){
 	               		  //createTimer();
+	               		calibrate.setEnabled(true);
 	               		  enableControllers();
+	               	  }else
+	               		  calibrate.setEnabled(false);
 	              }                 
 	         }
 
@@ -567,6 +662,35 @@ public static final String USER_NAME = "USER_NAME";
 	        
 	 }
 	 
+	 private void blink(){
+		 if(mRobot != null)
+		 {
+			 final Handler handler = new Handler();
+			 handler.postDelayed(new Runnable(){
+				 public void run()	{
+					 RGBLEDOutputCommand.sendCommand(mRobot, 255, 0, 0);
+				 }
+			 },750);
+			 
+			 handler.postDelayed(new Runnable(){
+				 public void run()	{
+					 RGBLEDOutputCommand.sendCommand(mRobot, 0, 255, 0);
+				 }
+			 },750);
+			 
+			 handler.postDelayed(new Runnable(){
+				 public void run()	{
+					 RGBLEDOutputCommand.sendCommand(mRobot, 0, 0, 255);
+				 }
+			 },750);
+			 
+			 handler.postDelayed(new Runnable(){
+				 public void run()	{
+					 RGBLEDOutputCommand.sendCommand(mRobot, 255, 255, 255);
+				 }
+			 },750);
+		 }
+	 }
 	 //handles the joystick touch click
 	 public void joystickClick(View view){
 		 if(attackTurn && counter_touch ==0){
@@ -602,27 +726,46 @@ public static final String USER_NAME = "USER_NAME";
 	    }
 	 
 	 public void sendMessage(){
-			String x = (String) enemyHP.getText();
-			int hp = Integer.parseInt(x) -10;
 
-			Log.d("sendMessage",x);
+			Log.d("sendMessage",""+attackTurn);
 //			EnemyProgressBar.incrementProgressBy(-10);
 //	        // Title progress is in range 0..10000
 //	        setProgress(100 * EnemyProgressBar.getProgress());
-			
-			enemyHPRef.setValue(hp, new Firebase.CompletionListener() {
+				System.out.println("hello i successfully ran");
+				
+					String x = (String) mainHP.getText();
+					if(x != null)
+					{
+					int hp = Integer.parseInt(x) -10;
+				
+				
+				myHPRef.setValue(hp, new Firebase.CompletionListener() {
 
-				@Override
-				public void onComplete(FirebaseError arg0, Firebase arg1) {
-					if (arg0 != null) {
-						Log.d("Data could not be saved: " + arg0.getMessage(), "hello");
-					} else {
-						Log.d("Data saved successfully.", "fail to attack");
+					@Override
+					public void onComplete(FirebaseError arg0, Firebase arg1) {
+						if (arg0 != null) {
+							Log.d("Data could not be saved: " + arg0.getMessage(), "hello");
+						} else {
+							Log.d("Data saved successfully.", "fail to attack");
+						}
 					}
-				}
 
-			});
-			enemyHP.setText(String.valueOf(hp));
+				});
+				mainHP.setText(String.valueOf(hp));
+					}
+//			enemyHPRef.setValue(hp, new Firebase.CompletionListener() {
+//
+//				@Override
+//				public void onComplete(FirebaseError arg0, Firebase arg1) {
+//					if (arg0 != null) {
+//						Log.d("Data could not be saved: " + arg0.getMessage(), "hello");
+//					} else {
+//						Log.d("Data saved successfully.", "fail to attack");
+//					}
+//				}
+//
+//			});
+//			enemyHP.setText(String.valueOf(hp));
 		}
 	    
 	 //game over dialog pop up

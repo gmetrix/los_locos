@@ -2,23 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ff888888" 
+    android:background="@drawable/spheroknockout"
     tools:context=".SpheroMenu" >
-	
+
     <RelativeLayout
-            android:layout_width="fill_parent"
-        	android:layout_height="fill_parent"
-            android:background="#A0000000"  >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
     <Button
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="119dp"
-        android:text="Start Game" />
-    
-    </RelativeLayout>
+        android:layout_centerInParent="true"
+        android:text="@string/start_button" />
+     </RelativeLayout>
 
 </FrameLayout>
