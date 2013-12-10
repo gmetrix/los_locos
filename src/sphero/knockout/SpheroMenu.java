@@ -90,6 +90,7 @@ public class SpheroMenu extends Activity  {
                     Intent i = new Intent(view.getContext(), Controller.class);
                     i.putExtra(Controller.USER_NAME, userName);
         	        startActivity(i);
+        	        finish();
                 }
             });
         }

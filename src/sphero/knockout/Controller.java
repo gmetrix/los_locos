@@ -225,9 +225,6 @@ public static final String USER_NAME = "USER_NAME";
 		mainHP = (TextView) findViewById(R.id.your_pts);
 		enemyHP = (TextView)findViewById(R.id.enemy_pts);
 		
-		//server= new Firebase(FIREBASE_URL).child("Game123");
-	
-		//enemy = new Firebase(FIREBASE_URL).child("Game123/Players/Player1");
 		
 		//set up for calibration seekbar
 		calibrate =(SeekBar)findViewById(R.id.calibrateSeek);
@@ -344,27 +341,29 @@ public static final String USER_NAME = "USER_NAME";
 	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
 	    }
 		@Override 
-//		public void onStop(){
-//			super.onStop();
-//			if(playerHPRef != null)
-//	    		playerHPRef.removeValue();
-//	    	if(playerListRef != null)
-//	    		playerListRef.removeValue();
-//	    	if(playerTurnRef != null)
-//	    		playerTurnRef.removeValue();
-//		    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
-//	    	// Disconnect Robot properly
-//	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
-//	    	
-//	    	mServ.pauseMusic();
-//			//server.getRoot().child("info/connected").removeEventListener(connectedListener);
-//	    	
-//		}
+		public void onStop(){
+			super.onStop();
+			if(playerHPRef != null)
+	    		playerHPRef.removeValue();
+	    	if(playerListRef != null)
+	    		playerListRef.removeValue();
+	    	if(playerTurnRef != null)
+	    		playerTurnRef.removeValue();
+		    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
+	    	// Disconnect Robot properly
+	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
+	    	
+	    	mServ.pauseMusic();
+			//server.getRoot().child("info/connected").removeEventListener(connectedListener);
+	    	
+		}
 		public void onRestart(){
+			super.onRestart();
 			mServ.resumeMusic();
 		}
 		public void onDestroy(){
-			if(playerHPRef != null)
+		super.onDestroy();	
+		if(playerHPRef != null)
     		playerHPRef.removeValue();
     	if(playerListRef != null)
     		playerListRef.removeValue();
@@ -373,7 +372,6 @@ public static final String USER_NAME = "USER_NAME";
 	    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
     	// Disconnect Robot properly
     	RobotProvider.getDefaultProvider().disconnectControlledRobots();
-			mServ.stopMusic();
 			doUnbindService();
 			stopService(music);
 		}
@@ -385,7 +383,10 @@ public static final String USER_NAME = "USER_NAME";
 		        .setPositiveButton(android.R.string.yes, new OnClickListener() {
 
 		            public void onClick(DialogInterface arg0, int arg1) {
-		                SheroMenu.c.super.onBackPressed();
+		            	Intent i = new Intent(Controller.this, SpheroMenu.class);
+	        	        startActivity(i);
+	                    finish();
+	        	        
 		            }
 		        }).create().show();
 		}
@@ -728,9 +729,7 @@ public static final String USER_NAME = "USER_NAME";
 	 public void sendMessage(){
 
 			Log.d("sendMessage",""+attackTurn);
-//			EnemyProgressBar.incrementProgressBy(-10);
-//	        // Title progress is in range 0..10000
-//	        setProgress(100 * EnemyProgressBar.getProgress());
+
 				System.out.println("hello i successfully ran");
 				
 					String x = (String) mainHP.getText();
@@ -753,19 +752,7 @@ public static final String USER_NAME = "USER_NAME";
 				});
 				mainHP.setText(String.valueOf(hp));
 					}
-//			enemyHPRef.setValue(hp, new Firebase.CompletionListener() {
-//
-//				@Override
-//				public void onComplete(FirebaseError arg0, Firebase arg1) {
-//					if (arg0 != null) {
-//						Log.d("Data could not be saved: " + arg0.getMessage(), "hello");
-//					} else {
-//						Log.d("Data saved successfully.", "fail to attack");
-//					}
-//				}
-//
-//			});
-//			enemyHP.setText(String.valueOf(hp));
+
 		}
 	    
 	 //game over dialog pop up
