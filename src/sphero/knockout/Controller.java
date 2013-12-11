@@ -90,6 +90,7 @@ public static final String USER_NAME = "USER_NAME";
 	private Firebase myHPRef;
 	private Firebase enemyTurnRef;
 	private Firebase enemyHPRef;
+	private Firebase playerData;
 	
 	
 	 /**
@@ -325,7 +326,7 @@ public static final String USER_NAME = "USER_NAME";
 		
 	}
 
-	 @Override
+	 
 	    protected void onPause() {
 	    	super.onPause();
 			// Remove async data listener
@@ -339,8 +340,9 @@ public static final String USER_NAME = "USER_NAME";
 			DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
 	    	// Disconnect Robot properly
 	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
+	        finish();
 	    }
-		@Override 
+		
 		public void onStop(){
 			super.onStop();
 			if(playerHPRef != null)
@@ -353,7 +355,7 @@ public static final String USER_NAME = "USER_NAME";
 	    	// Disconnect Robot properly
 	    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
 	    	
-	    	mServ.pauseMusic();
+	    	//mServ.pauseMusic();
 			//server.getRoot().child("info/connected").removeEventListener(connectedListener);
 	    	
 		}
@@ -363,15 +365,20 @@ public static final String USER_NAME = "USER_NAME";
 		}
 		public void onDestroy(){
 		super.onDestroy();	
-		if(playerHPRef != null)
-    		playerHPRef.removeValue();
-    	if(playerListRef != null)
-    		playerListRef.removeValue();
-    	if(playerTurnRef != null)
-    		playerTurnRef.removeValue();
-	    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
-    	// Disconnect Robot properly
-    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
+//		if(playerHPRef != null)
+//    		playerHPRef.removeValue();
+//    	if(playerListRef != null)
+//    		playerListRef.removeValue();
+//    	if(playerTurnRef != null)
+//    		playerTurnRef.removeValue();
+//    	
+//    	playerData = new Firebase("https://spheroko.firebaseio.com/player_data");
+//    	if(playerData != null){
+//    		playerData.removeValue();
+//    	}
+//	    DeviceMessenger.getInstance().removeAsyncDataListener(mRobot, mCollisionListener);
+//    	// Disconnect Robot properly
+//    	RobotProvider.getDefaultProvider().disconnectControlledRobots();
 			doUnbindService();
 			stopService(music);
 		}
@@ -383,9 +390,10 @@ public static final String USER_NAME = "USER_NAME";
 		        .setPositiveButton(android.R.string.yes, new OnClickListener() {
 
 		            public void onClick(DialogInterface arg0, int arg1) {
-		            	Intent i = new Intent(Controller.this, SpheroMenu.class);
-	        	        startActivity(i);
-	                    finish();
+		            
+//		            	Intent i = new Intent(Controller.this, SpheroMenu.class);
+//	        	        startActivity(i);
+		            	finish();
 	        	        
 		            }
 		        }).create().show();
@@ -590,8 +598,12 @@ public static final String USER_NAME = "USER_NAME";
 		              if(value == null)
 		              {
 		            	  //other user disconnected, close the activity
-		            	  if(wasConnected)
-		            		  finish();
+		            	  if(wasConnected){
+//		            		  Intent menu = new Intent(Controller.this, SpheroMenu.class);
+//		        	          startActivity(menu);
+		            		  finish(); 
+		            	  }
+		            		 
 		            	  System.out.println("no data");
 		              }
 		              else
@@ -641,7 +653,10 @@ public static final String USER_NAME = "USER_NAME";
 	              else
 	              {
 	            	  if(userdisconnected){
+//	            		  Intent menu = new Intent(Controller.this, SpheroMenu.class);
+//	        	          startActivity(menu);
 	            		  finish();
+	            		
 	            	  }
 	            	  attackTurn = (Boolean)value;
 	                  System.out.println(attackTurn);
@@ -737,7 +752,7 @@ public static final String USER_NAME = "USER_NAME";
 					{
 					int hp = Integer.parseInt(x) -10;
 				
-				
+				System.out.println("HP" + hp);
 				myHPRef.setValue(hp, new Firebase.CompletionListener() {
 
 					@Override

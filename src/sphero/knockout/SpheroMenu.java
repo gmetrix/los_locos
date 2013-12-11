@@ -68,6 +68,9 @@ public class SpheroMenu extends Activity  {
         
         return d;
     }
+	public void onPause(){
+		super.onPause();
+	}
 	
 	/**
      * A Dialog that asks for a username, and sets this username
@@ -90,7 +93,6 @@ public class SpheroMenu extends Activity  {
                     Intent i = new Intent(view.getContext(), Controller.class);
                     i.putExtra(Controller.USER_NAME, userName);
         	        startActivity(i);
-        	        finish();
                 }
             });
         }
